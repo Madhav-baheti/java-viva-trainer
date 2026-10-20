@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: viva-trainer
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    autoDeploy: true
+    envVars:
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+      RATE_LIMIT_PER_MIN: "30"
