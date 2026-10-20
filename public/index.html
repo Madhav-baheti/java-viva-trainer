@@ -2,33 +2,436 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>VivaPilot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VivaPilot: AI Java Viva Trainer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>VivaPilot</h1>
-  <nav>
-    <button data-tab="explain">Explain</button>
-    <button data-tab="viva">Viva</button>
-    <button data-tab="weak">Weak Topics</button>
-    <button data-tab="revision">Revision</button>
-  </nav>
-  <section id="explain" class="tab" hidden>
-    <h2>Explain</h2>
-    <p>Content goes here.</p>
-  </section>
-  <section id="viva" class="tab" hidden>
-    <h2>Viva</h2>
-    <p>Content goes here.</p>
-  </section>
-  <section id="weak" class="tab" hidden>
-    <h2>Weak Topics</h2>
-    <p>Content goes here.</p>
-  </section>
-  <section id="revision" class="tab" hidden>
-    <h2>Revision</h2>
-    <p>Content goes here.</p>
-  </section>
 
-  <script src="js/app.js"></script>
+  <!-- ============ HEADER ============ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="topbar-left">
+        <button class="icon-circle-btn" aria-label="Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <img class="logo" src="assets/logo.png" alt="VivaPilot">
+      </div>
+
+      <nav class="tabs" role="tablist" aria-label="VivaPilot sections">
+        <button class="tab is-active" role="tab" data-tab="explain"  aria-selected="true">Explain</button>
+        <button class="tab"           role="tab" data-tab="viva"     aria-selected="false">Viva Practice</button>
+        <button class="tab"           role="tab" data-tab="weak"     aria-selected="false">Weak Topics</button>
+        <button class="tab"           role="tab" data-tab="revision" aria-selected="false">Revision Pack</button>
+      </nav>
+
+      <div class="topbar-right">
+        <button id="btn-notif" class="icon-circle-btn has-dot" aria-label="Notifications" title="Notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="notif-dot"></span>
+        </button>
+        <div id="btn-avatar" class="avatar-circle" title="Student Profile" style="cursor: pointer;">
+          <span class="avatar-initials">VP</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global error toast -->
+  <div id="toast" class="toast" role="alert" hidden>
+    <span id="toast-text"></span>
+    <button id="toast-close" class="toast-close" aria-label="Dismiss">&times;</button>
+  </div>
+
+  <main class="page">
+
+    <!-- ============ TAB 1: EXPLAIN (DASHBOARD & HERO) ============ -->
+    <section class="panel is-active" id="panel-explain" data-panel="explain">
+      <!-- Hero Banner like Screen 2 -->
+      <div class="hero-card">
+        <div class="hero-content">
+          <div class="badge-pill">✨ In Progress</div>
+          <h1>Learn Java with AI</h1>
+          <p>AI helps you understand complex code, spot hidden bugs, and master your Java vivas faster.</p>
+        </div>
+        <div class="hero-mascot">
+          <div class="mascot-robot">
+            <svg viewBox="0 0 120 120" width="110" height="110" fill="none">
+              <circle cx="60" cy="60" r="50" fill="#fdfaf6" stroke="#eedecb" stroke-width="4"/>
+              <rect x="36" y="42" width="48" height="36" rx="14" fill="#231f1c"/>
+              <ellipse cx="48" cy="58" rx="5" ry="7" fill="#ff782d"/>
+              <ellipse cx="72" cy="58" rx="5" ry="7" fill="#ff782d"/>
+              <path d="M50 26 L60 40 L70 26" stroke="#ff782d" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="60" cy="24" r="5" fill="#ff782d"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Tiles -->
+      <div class="action-tiles">
+        <div class="action-tile" id="tile-to-explain" style="cursor: pointer;">
+          <div class="tile-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff782d" stroke-width="2.2" stroke-linecap="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div>
+            <strong>Code Explainer</strong>
+            <small>Deep walkthrough & complexity</small>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+
+        <div class="action-tile" id="tile-to-viva" style="cursor: pointer;">
+          <div class="tile-icon-wrap">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ff782d" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+          <div>
+            <strong>Interactive Viva</strong>
+            <small>5 targeted examiner questions</small>
+          </div>
+          <span class="tile-arrow">↗</span>
+        </div>
+      </div>
+
+      <!-- Main Input Card -->
+      <div class="card">
+        <div class="card-head-row">
+          <label class="field-label" for="explain-code">Paste your Java code</label>
+          <span class="hint" id="explain-count">0 / 6000</span>
+        </div>
+        <textarea id="explain-code" class="code-input" rows="11" spellcheck="false"
+          placeholder="public class QuickSort {&#10;    public static void sort(int[] arr) {&#10;        // paste your Java class or method&#10;    }&#10;}"></textarea>
+        <div class="row row-end">
+          <button id="explain-btn" class="btn btn-primary">
+            <span>Explain code</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="explain-loading" class="loading" hidden>
+        <span class="spinner"></span> Reading & analyzing your code...
+      </div>
+      <p id="explain-error" class="inline-error" role="alert" hidden></p>
+
+      <div id="explain-result" class="stack" hidden>
+        <div class="card">
+          <h2 class="card-title">Summary</h2>
+          <p id="explain-summary" class="prose"></p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Line-by-line Walkthrough</h2>
+          <ol id="explain-walkthrough" class="steps"></ol>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Bugs and Issues</h2>
+          <ul id="explain-issues" class="issues"></ul>
+          <p id="explain-no-issues" class="ok-note" hidden>No bugs or style issues detected.</p>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Complexity Analysis</h2>
+          <div class="complexity">
+            <div><span class="mini-label">Time Complexity</span><strong id="explain-time">-</strong></div>
+            <div><span class="mini-label">Space Complexity</span><strong id="explain-space">-</strong></div>
+          </div>
+          <p id="explain-complexity-reason" class="muted"></p>
+        </div>
+
+        <div class="card card-accent">
+          <div>
+            <h2 class="card-title">Concepts Covered</h2>
+            <div id="explain-topics" class="chips"></div>
+          </div>
+          <button id="explain-quiz-btn" class="btn btn-accent">
+            <span>Quiz me on this code</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 2: VIVA (MATCHES SCREEN 1 "CHOOSE THE CORRECT ANSWER EASILY") ============ -->
+    <section class="panel" id="panel-viva" data-panel="viva" hidden>
+      <div class="viva-header-wrap">
+        <h1 class="headline-with-badge">
+          Practice Your Viva <span class="highlight-badge">Answer Easily</span>
+        </h1>
+        <p class="headline-sub">5 questions, one at a time. Work with our AI examiner to build confidence.</p>
+      </div>
+
+      <div id="viva-loading" class="loading" hidden><span class="spinner"></span> <span id="viva-loading-text">Thinking...</span></div>
+      <p id="viva-error" class="inline-error" role="alert" hidden></p>
+
+      <!-- VIEW A: setup -->
+      <div id="viva-setup-view" class="card viva-setup">
+        <h2 class="card-title">Choose Question Source</h2>
+
+        <div class="choices">
+          <label class="choice">
+            <input type="radio" name="viva-source" value="code" checked>
+            <span class="choice-body">
+              <strong>My Code</strong>
+              <small>Questions about your Java snippet</small>
+            </span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="viva-source" value="topic">
+            <span class="choice-body">
+              <strong>Specific Topic</strong>
+              <small>Choose a curriculum concept</small>
+            </span>
+          </label>
+          <label class="choice">
+            <input type="radio" name="viva-source" value="weak">
+            <span class="choice-body">
+              <strong>Weak Topics</strong>
+              <small>Drill areas needing work</small>
+            </span>
+          </label>
+        </div>
+
+        <div class="only-code">
+          <label class="field-label" for="viva-code">Java Code</label>
+          <textarea id="viva-code" class="code-input" rows="8" spellcheck="false" placeholder="Paste your Java code here"></textarea>
+        </div>
+
+        <div class="only-topic" hidden>
+          <label class="field-label" for="viva-topic">Topic</label>
+          <select id="viva-topic" class="select">
+            <option value="java-basics">Java basics</option>
+            <option value="strings">Strings</option>
+            <option value="arrays">Arrays</option>
+            <option value="loops-control-flow">Loops and control flow</option>
+            <option value="classes-objects">Classes and objects</option>
+            <option value="constructors">Constructors</option>
+            <option value="encapsulation">Encapsulation</option>
+            <option value="inheritance">Inheritance</option>
+            <option value="polymorphism">Polymorphism</option>
+            <option value="abstraction-interfaces">Abstraction and interfaces</option>
+            <option value="exceptions">Exceptions</option>
+            <option value="collections">Collections</option>
+            <option value="generics">Generics</option>
+            <option value="file-io">File I/O</option>
+            <option value="multithreading">Multithreading</option>
+          </select>
+        </div>
+
+        <div class="only-weak" hidden>
+          <p class="muted">We will automatically test the topics you scored lowest on in past sessions.</p>
+        </div>
+
+        <div class="row row-end">
+          <button id="viva-start-btn" class="btn btn-primary">
+            <span>Start viva session</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW B: question card (Matches Screen 1 format) -->
+      <div id="viva-question-view" class="stack" hidden>
+        <div class="timer-meta-bar">
+          <span class="timer-pill" id="viva-progress-text">Question 1 of 5</span>
+          <span id="viva-topic-tag" class="chip">inheritance</span>
+        </div>
+
+        <div class="progress"><span id="viva-progress-bar" style="width:20%"></span></div>
+
+        <div class="card question-card-viva">
+          <div class="spider-mascot-visual">
+            <svg width="68" height="68" viewBox="0 0 80 80" fill="none">
+              <circle cx="40" cy="40" r="34" fill="#fff7ed" stroke="#fed7aa" stroke-width="2"/>
+              <circle cx="40" cy="40" r="16" fill="#2b2622"/>
+              <ellipse cx="36" cy="38" rx="2.5" ry="4" fill="#ff782d"/>
+              <ellipse cx="44" cy="38" rx="2.5" ry="4" fill="#ff782d"/>
+              <path d="M24 32 C16 28 14 42 18 48" stroke="#2b2622" stroke-width="3" stroke-linecap="round"/>
+              <path d="M56 32 C64 28 66 42 62 48" stroke="#2b2622" stroke-width="3" stroke-linecap="round"/>
+              <path d="M26 44 C18 46 16 58 22 62" stroke="#2b2622" stroke-width="3" stroke-linecap="round"/>
+              <path d="M54 44 C62 46 64 58 58 62" stroke="#2b2622" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <p id="viva-question-text" class="question-main-text"></p>
+          <label class="field-label" for="viva-answer">Your Viva Response</label>
+          <textarea id="viva-answer" class="answer-input" rows="6" placeholder="Explain your answer clearly as you would in a viva exam..."></textarea>
+          <div class="row row-end">
+            <button id="viva-submit-btn" class="btn btn-primary">
+              <span>Submit Answer</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW C: result for one question -->
+      <div id="viva-result-view" class="stack" hidden>
+        <div class="card result-head">
+          <div id="viva-score" class="score" data-level="mid">
+            <strong id="viva-score-num">0</strong><span>/10</span>
+          </div>
+          <div>
+            <h2 class="card-title">Examiner Verdict</h2>
+            <p id="viva-verdict" class="prose"></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Model Answer</h2>
+          <p id="viva-model-answer" class="prose"></p>
+        </div>
+
+        <div class="card" id="viva-missed-card">
+          <h2 class="card-title">Key Points Missed</h2>
+          <ul id="viva-missed" class="issues"></ul>
+        </div>
+
+        <div class="row row-end">
+          <button id="viva-next-btn" class="btn btn-primary">
+            <span>Next question</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- VIEW D: session summary -->
+      <div id="viva-summary-view" class="stack" hidden>
+        <div class="card summary-head">
+          <div class="score score-lg" id="viva-total-score" data-level="mid">
+            <strong id="viva-total-num">0</strong><span>/50</span>
+          </div>
+          <div>
+            <h2 class="card-title">Session Complete!</h2>
+            <p id="viva-summary-text" class="muted"></p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Performance by Topic</h2>
+          <ul id="viva-topic-breakdown" class="breakdown"></ul>
+        </div>
+
+        <div class="row row-end">
+          <button id="viva-weak-btn" class="btn btn-secondary">Review Weak Topics</button>
+          <button id="viva-restart-btn" class="btn btn-primary">Start New Session</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB 3: WEAK TOPICS (MATCHES "CATEGORIES" IN SCREEN 2) ============ -->
+    <section class="panel" id="panel-weak" data-panel="weak" hidden>
+      <div class="panel-head-row">
+        <div>
+          <h1 class="headline-simple">Categories & Weak Topics</h1>
+          <p class="muted">Ranked by average score. Topics under 6 are flagged for extra practice.</p>
+        </div>
+        <div class="head-actions">
+          <button id="weak-reset-btn" class="btn btn-ghost">Reset Data</button>
+          <button id="weak-drill-btn" class="btn btn-primary">
+            <span>Drill Weak Topics</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <ul id="weak-list" class="weak-list"></ul>
+
+        <div id="weak-empty" class="empty">
+          <div class="empty-icon-wrap">📚</div>
+          <strong>No Practice Data Yet</strong>
+          <p>Complete a viva practice session and your topic statistics will appear here.</p>
+        </div>
+      </div>
+
+      <!-- Row template matching Categories in Screen 2 -->
+      <template id="weak-row-template">
+        <li class="weak-row" data-level="ok">
+          <div class="weak-info">
+            <span class="weak-name" data-field="name"></span>
+            <div class="weak-subpills">
+              <span class="subpill" data-field="attempts"></span>
+              <span class="subpill" data-field="avg"></span>
+            </div>
+          </div>
+          <div class="bar-wrap">
+            <div class="bar"><span data-field="bar" style="width:0%"></span></div>
+          </div>
+          <span class="badge" data-field="badge"></span>
+          <button class="circle-play-btn" aria-label="Drill this topic">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+          </button>
+        </li>
+      </template>
+    </section>
+
+    <!-- ============ TAB 4: REVISION (MATCHES SCREEN 3 "AI ASSISTANT") ============ -->
+    <section class="panel" id="panel-revision" data-panel="revision" hidden>
+      <div class="assistant-hero">
+        <div class="soundwave-wrap">
+          <svg viewBox="0 0 300 60" width="280" height="60" fill="none">
+            <path d="M10 30 Q35 5 60 30 T110 30 T160 30 T210 30 T260 30 T290 30" stroke="#ff782d" stroke-width="3" stroke-linecap="round"/>
+            <path d="M20 30 Q45 15 70 30 T120 30 T170 30 T220 30 T270 30" stroke="#fdba74" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+            <path d="M30 30 Q55 45 80 30 T130 30 T180 30 T230 30 T280 30" stroke="#fed7aa" stroke-width="2" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="speech-bubble">
+          <span>Hi! Paste your study notes and I'll build you a revision pack with flashcards.</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head-row">
+          <label class="field-label" for="revision-notes">Your Study Notes</label>
+          <span class="hint" id="revision-count">0 / 6000</span>
+        </div>
+        <textarea id="revision-notes" class="answer-input" rows="8" placeholder="Paste lecture notes or chapter summaries here..."></textarea>
+        <div class="row row-end">
+          <button id="revision-btn" class="btn btn-primary">
+            <span>Generate Revision Pack</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="revision-loading" class="loading" hidden><span class="spinner"></span> Building your flashcards...</div>
+      <p id="revision-error" class="inline-error" role="alert" hidden></p>
+
+      <div id="revision-result" class="stack" hidden>
+        <div class="card">
+          <h2 class="card-title">Key Summary Points</h2>
+          <ul id="revision-summary" class="bullets"></ul>
+        </div>
+
+        <div class="card">
+          <div class="card-head-row">
+            <h2 class="card-title">Interactive Flashcards</h2>
+            <span id="flashcard-counter" class="timer-pill">1 / 10</span>
+          </div>
+
+          <button id="flashcard" class="flashcard" type="button" aria-label="Flip flashcard">
+            <span id="flashcard-topic" class="chip">Topic</span>
+            <span id="flashcard-front" class="flash-text"></span>
+            <span id="flashcard-back" class="flash-text flash-back" hidden></span>
+            <span class="flash-hint" id="flashcard-hint">Tap to flip & reveal answer</span>
+          </button>
+
+          <div class="flash-nav">
+            <button id="flashcard-prev" class="btn btn-secondary">← Previous</button>
+            <button id="flashcard-next" class="btn btn-secondary">Next →</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="foot">VivaPilot &middot; AI Java Viva Trainer</footer>
+
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
