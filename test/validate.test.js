@@ -34,6 +34,7 @@ describe('getValidJson', () => {
       check: (obj) => {
         assert.ok(obj.ok, 'ok flag missing');
       },
+      callFn: async () => '{"ok":true}'
     });
     assert.deepStrictEqual(result, { ok: true });
   });

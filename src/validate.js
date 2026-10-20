@@ -18,11 +18,14 @@ function stripCodeFences(text) {
  * @param {{system:string, user:string, check: (obj:any)=>void}} param
  * @returns {Promise<any>} parsed and validated JSON object
  */
-async function getValidJson({ system, user, check }) {
+async function getValidJson({ system, user, check, callFn }) {
+  // Use the provided callFn or fallback to the real callModel at call time
+  const fn = callFn || require('./llm').callModel;
+
   // Helper to invoke the model with optional error hint
   async function invokeModel(errorHint) {
     const promptUser = errorHint ? `${user}\n\nPrevious error: ${errorHint}` : user;
-    const raw = await callModel({ system, user: promptUser });
+    const raw = await fn({ system, user: promptUser });
     const cleaned = stripCodeFences(raw);
     return JSON.parse(cleaned);
   }
