@@ -7,6 +7,10 @@ const path = require('path');
 
 const app = express();
 
+// Render (and most PaaS) sit behind a reverse proxy.
+// This tells express-rate-limit to use the real client IP from X-Forwarded-For.
+app.set('trust proxy', 1);
+
 const PORT = process.env.PORT || 3000;
 const RATE_LIMIT_PER_MIN = parseInt(process.env.RATE_LIMIT_PER_MIN) || 30;
 
