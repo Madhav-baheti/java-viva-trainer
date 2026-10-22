@@ -83,7 +83,6 @@ router.post('/evaluate', async (req, res) => {
   if (typeof answer !== 'string' || answer.trim() === '') {
     return res.status(400).json({ error: 'answer must be a non-empty string' });
   }
-  }
 
   const { system, user } = buildEvaluatePrompt({ question, answer, topic, code });
 

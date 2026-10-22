@@ -5,11 +5,41 @@
 const { callModel } = require('./llm'); // import callModel for use
 
 /**
- * Strips Markdown code fences (```` ``` ````) from a string if present.
- * Handles optional language identifier after the opening fence.
+ * Extracts the first complete JSON object from a string.
+ * Handles cases where the model wraps JSON in markdown fences,
+ * adds explanation text before/after, or returns it bare.
+ * Strategy:
+ *  1. Strip ``` code fences if present.
+ *  2. Find the first '{' and the matching closing '}' by brace counting.
+ *  3. Fall back to the full trimmed string if no braces found.
  */
-function stripCodeFences(text) {
-  return text.replace(/^```\w*\n([\s\S]*?)\n```$/m, '$1').trim();
+function extractJson(text) {
+  // Step 1: strip any markdown code fences (```json ... ``` or ``` ... ```)
+  let s = text.replace(/^```(?:json|javascript|js)?\s*\n?([\s\S]*?)\n?```\s*$/im, '$1').trim();
+
+  // Step 2: find first '{' and its matching '}'
+  const start = s.indexOf('{');
+  if (start === -1) return s; // no object found — let JSON.parse fail with a clear message
+
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+
+  for (let i = start; i < s.length; i++) {
+    const ch = s[i];
+    if (escape) { escape = false; continue; }
+    if (ch === '\\' && inString) { escape = true; continue; }
+    if (ch === '"') { inString = !inString; continue; }
+    if (inString) continue;
+    if (ch === '{') depth++;
+    else if (ch === '}') {
+      depth--;
+      if (depth === 0) return s.slice(start, i + 1);
+    }
+  }
+
+  // Brace mismatch — return from first '{' onward and let JSON.parse report the error
+  return s.slice(start);
 }
 
 /**
@@ -26,7 +56,7 @@ async function getValidJson({ system, user, check, callFn }) {
   async function invokeModel(errorHint) {
     const promptUser = errorHint ? `${user}\n\nPrevious error: ${errorHint}` : user;
     const raw = await fn({ system, user: promptUser });
-    const cleaned = stripCodeFences(raw);
+    const cleaned = extractJson(raw);
     return JSON.parse(cleaned);
   }
 
