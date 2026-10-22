@@ -49,16 +49,14 @@ function checkEvaluateShape(obj) {
  */
 router.post('/question', async (req, res) => {
   const { source, code, topic, focusTopics, asked, lastScore } = req.body;
-  const maxChars = parseInt(process.env.MAX_INPUT_CHARS) || 6000;
-
   const validSources = ['code', 'topic', 'weak'];
   if (!validSources.includes(source)) {
     return res.status(400).json({ error: 'source must be "code", "topic", or "weak"' });
   }
 
   if (source === 'code') {
-    if (typeof code !== 'string' || code.trim() === '' || code.length > maxChars) {
-      return res.status(400).json({ error: 'code must be a non-empty string under MAX_INPUT_CHARS' });
+    if (typeof code !== 'string' || code.trim() === '') {
+      return res.status(400).json({ error: 'code must be a non-empty string' });
     }
   }
 
@@ -79,13 +77,12 @@ router.post('/question', async (req, res) => {
  */
 router.post('/evaluate', async (req, res) => {
   const { question, answer, topic, code } = req.body;
-  const maxChars = parseInt(process.env.MAX_INPUT_CHARS) || 6000;
-
   if (typeof question !== 'string' || question.trim() === '') {
     return res.status(400).json({ error: 'question must be a non-empty string' });
   }
-  if (typeof answer !== 'string' || answer.trim() === '' || answer.length > maxChars) {
-    return res.status(400).json({ error: 'answer must be a non-empty string under MAX_INPUT_CHARS' });
+  if (typeof answer !== 'string' || answer.trim() === '') {
+    return res.status(400).json({ error: 'answer must be a non-empty string' });
+  }
   }
 
   const { system, user } = buildEvaluatePrompt({ question, answer, topic, code });

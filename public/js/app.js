@@ -573,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Character counter for notes
   if (revisionNotesEl && revisionCountEl) {
     revisionNotesEl.addEventListener('input', () => {
-      revisionCountEl.textContent = `${revisionNotesEl.value.length} / 6000`;
+      revisionCountEl.textContent = `${revisionNotesEl.value.length} chars`;
     });
   }
 

@@ -25,9 +25,8 @@ function checkRevisionShape(obj) {
 
 router.post('/', async (req, res) => {
   const { notes } = req.body;
-  const maxChars = parseInt(process.env.MAX_INPUT_CHARS) || 6000;
-  if (typeof notes !== 'string' || notes.trim() === '' || notes.length > maxChars) {
-    return res.status(400).json({ error: 'notes must be a non-empty string under MAX_INPUT_CHARS' });
+  if (typeof notes !== 'string' || notes.trim() === '') {
+    return res.status(400).json({ error: 'notes must be a non-empty string' });
   }
 
   const { system, user } = buildRevisionPrompt(notes);
