@@ -65,12 +65,15 @@ async function getValidJson({ system, user, check, callFn }) {
     await check(obj);
     return obj;
   } catch (firstErr) {
+    // Log first error to Render logs for diagnosis
+    console.error('[AI attempt 1 failed]', firstErr.message);
     // Retry once with description of what went wrong
     try {
       const obj = await invokeModel(firstErr.message || String(firstErr));
       await check(obj);
       return obj;
     } catch (secondErr) {
+      console.error('[AI attempt 2 failed]', secondErr.message);
       const err = new Error('Failed to obtain valid JSON from AI');
       err.status = 502;
       err.cause = secondErr;

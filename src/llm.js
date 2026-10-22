@@ -38,6 +38,7 @@ async function callModel({ system, user }) {
     });
     if (!response.ok) {
       const txt = await response.text();
+      console.error('[Gemini API error]', response.status, txt.slice(0, 300));
       throw new Error(`Gemini API error ${response.status}: ${txt}`);
     }
     const data = await response.json();
