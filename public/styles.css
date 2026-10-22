@@ -142,6 +142,47 @@ body {
   cursor: pointer;
 }
 
+.brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  user-select: none;
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.logo-circle-one {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  box-shadow: 0 2px 8px rgba(255, 120, 45, 0.45);
+}
+
+.logo-circle-two {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--dark-btn);
+}
+
+.brand-name {
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-heading);
+}
+
+.brand-name span {
+  color: var(--accent-orange);
+}
+
 .logo {
   height: 38px;
   width: auto;
