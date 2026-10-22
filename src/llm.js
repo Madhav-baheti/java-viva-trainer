@@ -13,9 +13,8 @@
  */
 async function callModel({ system, user }) {
   const apiKey = process.env.AI_API_KEY;
-  const model = process.env.AI_MODEL;
+  const model = process.env.AI_MODEL || 'gemini-3.5-flash-lite';
   if (!apiKey) throw new Error('AI_API_KEY not set');
-  if (!model) throw new Error('AI_MODEL not set');
 
   const cleanModel = model.replace(/^models\//i, '').trim().replace(/^['"]|['"]$/g, '');
   const base = 'https://generativelanguage.googleapis.com/v1beta';
