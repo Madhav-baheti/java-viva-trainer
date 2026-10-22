@@ -28,9 +28,8 @@ function checkExplainShape(obj) {
 
 router.post('/', async (req, res) => {
   const { code } = req.body;
-  const maxChars = parseInt(process.env.MAX_INPUT_CHARS) || 6000;
-  if (typeof code !== 'string' || code.trim() === '' || code.length > maxChars) {
-    return res.status(400).json({ error: 'code must be a non‑empty string under MAX_INPUT_CHARS' });
+  if (typeof code !== 'string' || code.trim() === '') {
+    return res.status(400).json({ error: 'code must be a non‑empty string' });
   }
 
   const { system, user } = buildExplainPrompt(code);

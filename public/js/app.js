@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Character counter
   if (explainCodeEl && explainCountEl) {
     explainCodeEl.addEventListener('input', () => {
-      explainCountEl.textContent = `${explainCodeEl.value.length} / 6000`;
+      explainCountEl.textContent = `${explainCodeEl.value.length} chars`;
     });
   }
 
